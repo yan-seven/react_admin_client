@@ -1,0 +1,38 @@
+.header{
+    background-color: #fff;
+    height: 80px;
+    .header-top{
+        height: 40px;
+        font-size: 14px;
+        text-align: right;
+        line-height: 40px;
+        border-bottom:1px blue solid;
+        span{
+            padding-right: 10px;
+        }
+        padding-right: 10px;
+    }
+    .header-bottom{
+        line-height: 40px;
+        display: flex;
+        .header-bottom-left{
+            position: relative;
+            width: 25%;
+            text-align: center;
+            &::after{
+                position: absolute;
+                top:100%;
+                right: 50%;
+                transform: translateX(50%);
+                content: '';
+                border: 20px solid;
+                border-bottom: none;
+                border-color: #fff transparent transparent transparent;
+            }
+        }
+        .header-bottom-right{
+            width: 75%;
+            text-align: right;
+        }
+    }
+}

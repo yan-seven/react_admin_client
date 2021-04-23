@@ -1,0 +1,23 @@
+.left_nav {
+  color: #ad1414;
+}
+.left_nav .left-nav-header {
+  background-color: #002140;
+  height: 60px;
+}
+.left_nav .left-nav-header img {
+  width: 48px;
+  height: 48px;
+  margin: 6px 5px 0 10px;
+  border-radius: 30px;
+  vertical-align: auto;
+}
+.left_nav .left-nav-header h2 {
+  font-size: 1.5em;
+  color: white;
+  display: inline;
+  line-height: 60px;
+  padding-left: 10px;
+  letter-spacing: 5px;
+  position: absolute;
+}
