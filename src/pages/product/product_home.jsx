@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
-import {Card,Select,Input,Table,Button} from 'antd'
+import {Card,Select,Input,Table,Button, message} from 'antd'
 import {PlusOutlined} from '@ant-design/icons'
 import LinkButton from '../../components/link-button'
-import {reqProducts} from '../../api'
+//import {reqProducts, reqSearchProducts,reqUpdateStatus} from '../../api'
 import {PAGE_SIZE} from '../../utils/constants'
+import { reqUpdateStatus } from '../../api'
 
 const Option=Select.Option
 export default class ProductHome extends Component {
@@ -17,7 +18,10 @@ export default class ProductHome extends Component {
                 "desc":'经典款，姐妹们冲',
                 'pCategoryId':"6074fbf0dc4ac51728f9df02",
                 'categoryId':"6075407ddc4ac51728f9df0d",
-                'detail':"<p></p>"
+                'detail':"<p>我的华硕</p>",
+                'imgs':[
+                    'http://localhost:3000/static/media/8.5a098bc8.jpg',
+                ]
             },
             {
                 'status':0,
@@ -27,7 +31,10 @@ export default class ProductHome extends Component {
                 "desc":'性价比极高，被7万人种草',
                 'pCategoryId':"6074fbf0dc4ac51728f9df02",
                 'categoryId':"60754099dc4ac51728f9df0e",
-                'detail':"<p></p>"
+                'detail':"<p>我的联想</p>",
+                'imgs':[
+                    'http://localhost:3000/static/media/8.5a098bc8.jpg',
+                ]
             }
         ],
         total:0,
@@ -53,12 +60,15 @@ export default class ProductHome extends Component {
           {
             width:100,
             title: '状态',
-            dataIndex: 'status',
-            render:(status)=>{
+            render:(product)=>{
+                const {status,_id} = product
                 return(
                     <span >
-                        <Button type='primary'>在售</Button>
-                        <span>下架</span>
+                        <Button 
+                            type='primary' 
+                            onClick={()=>this.updateStatus(_id,status===1?2:1)}
+                        >{status===1?'下架':'在售'}</Button>
+                        <span>{status===1?'在售':'已下架'}</span>
                     </span>
                 )
             }
@@ -69,8 +79,8 @@ export default class ProductHome extends Component {
             render:(product)=>{
                 return(
                     <span>
-                        <LinkButton>详情</LinkButton>
-                        <LinkButton>修改</LinkButton>
+                        <LinkButton onClick={()=>this.props.history.push('/product/detail',{product})}>详情</LinkButton>
+                        <LinkButton onClick={()=>this.props.history.push('/product/addupdate',{product})}>修改</LinkButton>
                     </span>
                 )
             }
@@ -78,16 +88,33 @@ export default class ProductHome extends Component {
         ]
     }
 
-    getProducts=async (pageNum)=>{
-        this.setState({loading:true})
-        const result=await reqProducts({pageNum,pageSize:PAGE_SIZE})
-        this.setState({loading:false})
+    // getProducts=async (pageNum)=>{
+    //     this.pageNum=pageNum
+    //     const {searchName,searchType} = this.state
+    //     this.setState({loading:true})
+    //     let result
+    //     if(searchName!==''){
+    //         result=await reqSearchProducts({pageNum,pageSize:PAGE_SIZE,searchName,searchType})
+    //     }else{
+    //         result=await reqProducts({pageNum,pageSize:PAGE_SIZE})
+    //     }
+    //     this.setState({loading:false})
+    //     if(result.status===0){
+    //         const {total,list}=result.data
+    //         this.setState({
+    //             total,
+    //             products:list
+    //         })
+    //     }
+    // }
+
+    updateStatus=async (productId,status)=>{
+        const result=await reqUpdateStatus(productId,status)
         if(result.status===0){
-            const {total,list}=result.data
-            this.setState({
-                total,
-                products:list
-            })
+            message.success('更新状态成功')
+           // this.getProducts(this.pageNum)
+        }else{
+            message.error('更新状态失败')
         }
     }
 
@@ -112,11 +139,11 @@ export default class ProductHome extends Component {
                     value={searchName}
                     onChange={event=>this.setState({searchName:event.target.value})}
                 />
-                <Button type='primary'>搜索</Button>
+                <Button type='primary' onClick={()=>this.getProducts(1)}>搜索</Button>
             </span>
         )
         const extra=(
-            <Button type='primary'>
+            <Button type='primary' onClick={()=>this.props.history.push('/product/addupdate')}>
                 <PlusOutlined />
                 <span>添加商品</span>
             </Button>
@@ -133,7 +160,7 @@ export default class ProductHome extends Component {
                         defaultPageSize:PAGE_SIZE,
                         showQuickJumper:true,
                         total,
-                        onChange:this.getProducts
+                        //onChange:this.getProducts
                     }}
                     />
             </Card>

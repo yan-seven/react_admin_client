@@ -13,15 +13,14 @@ class LeftNav extends Component {
                 pre.push(
                     (
                         <Menu.Item key={item.key} icon={item.icon}>
-                        <Link to={item.key} >
-                        </Link>
-                        {item.title}
-                    </Menu.Item>
+                            <Link to={item.key} ></Link>
+                            {item.title}
+                        </Menu.Item>
                     )
                 )
             }else{
                 const path=this.props.location.pathname
-                const citem=item.children.find(citem=>citem.key===path)
+                const citem=item.children.find(citem=>path.indexOf(citem.key)===0)
                 if(citem){
                     this.openkey=item.key
                 }
@@ -42,7 +41,10 @@ class LeftNav extends Component {
     }
 
     render() {
-        const path=this.props.location.pathname
+        let path=this.props.location.pathname
+        if(path.indexOf('/product')===0){
+            path='/product'
+        }
         return (
             <div className='left_nav'>
                 <Link to='/' className='left-nav-header'>
